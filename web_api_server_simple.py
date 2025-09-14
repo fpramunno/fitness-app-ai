@@ -29,7 +29,7 @@ CORS(app, supports_credentials=True, origins=[
 ])
 
 # RunPod AI server configuration
-RUNPOD_API_URL = os.getenv('RUNPOD_API_URL', 'http://localhost:3001')
+RUNPOD_API_URL = os.getenv('RUNPOD_API_URL', 'http://213.181.111.2:3002')
 
 # Database setup (using SQLite for now)
 DATABASE_PATH = 'fitness_app.db'
@@ -332,14 +332,35 @@ def logout():
     return jsonify({'success': True})
 
 @app.route('/api/generate-program', methods=['POST'])
-def generate_program_fallback():
-    """Generate program using fallback method when RunPod is not available"""
+def generate_program():
+    """Generate program using RunPod AI service or fallback"""
     try:
         data = request.get_json()
         if not data:
             return jsonify({'error': 'No data provided'}), 400
 
-        # Create a simple fallback program
+        # Try to call RunPod AI service first
+        try:
+            print(f"🔗 Calling RunPod AI at {RUNPOD_API_URL}")
+            response = requests.post(
+                f"{RUNPOD_API_URL}/generate-program",
+                json=data,
+                timeout=30
+            )
+
+            if response.status_code == 200:
+                ai_result = response.json()
+                ai_result['model_type'] = '🤖 AI Generated (RunPod GPU)'
+                print("✅ RunPod AI generation successful!")
+                return jsonify(ai_result)
+            else:
+                print(f"⚠️ RunPod returned status {response.status_code}")
+
+        except Exception as e:
+            print(f"⚠️ RunPod connection failed: {e}")
+
+        # Fallback generation if RunPod fails
+        print("🔄 Using fallback generation")
         program_data = {
             'Day 1': 'Upper Pull Day:\n• Pull-ups: 4x8\n• Rows: 3x10\n• Bicep Curls: 3x12',
             'Day 2': 'Upper Push Day:\n• Dips: 4x8\n• Push-ups: 3x12\n• Tricep Extensions: 3x10',
@@ -349,13 +370,13 @@ def generate_program_fallback():
         response = {
             'weekly_program': program_data,
             'generated_at': datetime.now().isoformat(),
-            'model_type': 'Fallback generation (RunPod not connected)'
+            'model_type': 'Fallback generation (RunPod not available)'
         }
 
         return jsonify(response)
 
     except Exception as e:
-        print(f"❌ Error in fallback generation: {e}")
+        print(f"❌ Error in program generation: {e}")
         return jsonify({'error': 'Program generation failed'}), 500
 
 # Auto-initialize database on import (for production)
