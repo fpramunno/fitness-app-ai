@@ -125,12 +125,30 @@ def generate_verification_token():
 @app.route('/health', methods=['GET'])
 def health_check():
     """Health check endpoint"""
+    try:
+        # Test database connection
+        with get_db() as conn:
+            cursor = conn.cursor()
+            cursor.execute('SELECT 1')
+        db_status = 'connected'
+    except Exception as e:
+        db_status = f'error: {str(e)}'
+
     return jsonify({
         'status': 'healthy',
         'timestamp': datetime.now().isoformat(),
-        'database': 'connected',
+        'database': db_status,
         'runpod_connected': check_runpod_connection()
     })
+
+@app.route('/init-db', methods=['POST'])
+def init_db_endpoint():
+    """Initialize database tables"""
+    try:
+        init_database()
+        return jsonify({'success': True, 'message': 'Database initialized successfully'})
+    except Exception as e:
+        return jsonify({'error': f'Database initialization failed: {str(e)}'}), 500
 
 def check_runpod_connection():
     """Check if RunPod AI server is available"""
