@@ -1,7 +1,7 @@
 {
-  "buildCommand": "npm run build:web",
+  "buildCommand": "cp web_app.html dist/index.html",
   "outputDirectory": "dist",
-  "devCommand": "npm run web",
+  "devCommand": "python -m http.server 3000",
   "framework": null,
-  "installCommand": "npm install"
+  "installCommand": "mkdir -p dist"
 }
