@@ -702,32 +702,43 @@
             });
 
             // Toggle auth mode
-            document.getElementById('toggleAuth').addEventListener('click', function() {
-                isSignupMode = !isSignupMode;
-                const emailGroup = document.getElementById('emailGroup');
-                const authButton = document.getElementById('authButton');
-                const toggleButton = document.getElementById('toggleAuth');
+            const toggleBtn = document.getElementById('toggleAuth');
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function() {
+                    console.log('Toggle button clicked!');
+                    isSignupMode = !isSignupMode;
+                    const emailGroup = document.getElementById('emailGroup');
+                    const authButton = document.getElementById('authButton');
+                    const toggleButton = document.getElementById('toggleAuth');
 
-                if (isSignupMode) {
-                    emailGroup.style.display = 'block';
-                    emailGroup.querySelector('input').required = true;
-                    authButton.textContent = 'Sign Up';
-                    toggleButton.textContent = 'Have an account? Login';
-                } else {
-                    emailGroup.style.display = 'none';
-                    emailGroup.querySelector('input').required = false;
-                    authButton.textContent = 'Login';
-                    toggleButton.textContent = 'Need an account? Sign up';
-                }
-            });
+                    if (isSignupMode) {
+                        emailGroup.style.display = 'block';
+                        emailGroup.querySelector('input').required = true;
+                        authButton.textContent = 'Sign Up';
+                        toggleButton.textContent = 'Have an account? Login';
+                        console.log('Switched to signup mode');
+                    } else {
+                        emailGroup.style.display = 'none';
+                        emailGroup.querySelector('input').required = false;
+                        authButton.textContent = 'Login';
+                        toggleButton.textContent = 'Need an account? Sign up';
+                        console.log('Switched to login mode');
+                    }
+                });
+            } else {
+                console.error('toggleAuth button not found!');
+            }
         }
 
         async function handleAuth(e) {
             e.preventDefault();
+            console.log('Auth form submitted!');
 
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             const email = document.getElementById('email').value;
+
+            console.log('Form data:', { username, isSignupMode });
 
             try {
                 let endpoint = isSignupMode ? '/api/auth/signup' : '/api/auth/login';
