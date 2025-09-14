@@ -150,6 +150,40 @@ def init_db_endpoint():
     except Exception as e:
         return jsonify({'error': f'Database initialization failed: {str(e)}'}), 500
 
+@app.route('/admin/users', methods=['GET'])
+def list_users():
+    """List all registered users (for debugging)"""
+    try:
+        with get_db() as conn:
+            cursor = conn.cursor()
+            cursor.execute('''
+                SELECT u.id, u.username, u.email, u.created_at, u.last_login,
+                       s.total_programs, s.current_streak, s.favorite_goal
+                FROM users u
+                LEFT JOIN user_stats s ON u.id = s.user_id
+                ORDER BY u.created_at DESC
+            ''')
+            users = []
+            for row in cursor.fetchall():
+                users.append({
+                    'id': row['id'],
+                    'username': row['username'],
+                    'email': row['email'],
+                    'created_at': row['created_at'],
+                    'last_login': row['last_login'],
+                    'total_programs': row['total_programs'] or 0,
+                    'current_streak': row['current_streak'] or 0,
+                    'favorite_goal': row['favorite_goal'] or 'strength'
+                })
+
+            return jsonify({
+                'success': True,
+                'users': users,
+                'total_count': len(users)
+            })
+    except Exception as e:
+        return jsonify({'error': f'Failed to list users: {str(e)}'}), 500
+
 def check_runpod_connection():
     """Check if RunPod AI server is available"""
     try:
