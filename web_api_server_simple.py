@@ -127,11 +127,17 @@ def generate_verification_token():
 def health_check():
     """Health check endpoint"""
     try:
-        # Test database connection
+        # Test database connection and tables
         with get_db() as conn:
             cursor = conn.cursor()
-            cursor.execute('SELECT 1')
-        db_status = 'connected'
+            cursor.execute('SELECT name FROM sqlite_master WHERE type="table"')
+            tables = [row[0] for row in cursor.fetchall()]
+
+            if 'users' in tables and 'user_stats' in tables:
+                db_status = 'connected_with_tables'
+            else:
+                db_status = f'connected_missing_tables: {tables}'
+
     except Exception as e:
         db_status = f'error: {str(e)}'
 
