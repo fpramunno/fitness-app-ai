@@ -351,9 +351,32 @@ def generate_program():
 
             if response.status_code == 200:
                 ai_result = response.json()
-                ai_result['model_type'] = '🤖 AI Generated (RunPod GPU)'
+
+                # Parse the weekly_program string into separate days
+                weekly_program_text = ai_result.get('weekly_program', '')
+
+                # Split by day headers and create day objects
+                import re
+                days = {}
+                day_sections = re.split(r'=== DAY (\d+):', weekly_program_text)
+
+                for i in range(1, len(day_sections), 2):
+                    day_num = day_sections[i]
+                    day_content = day_sections[i + 1].strip()
+
+                    # Remove header text after day number and clean content
+                    day_content = re.sub(r'^[^•]*', '', day_content).strip()
+                    days[f'Day {day_num}'] = day_content
+
+                # Return in expected format
+                response_data = {
+                    'weekly_program': days,
+                    'generated_at': ai_result.get('generated_at'),
+                    'model_type': '🤖 AI Generated (RunPod GPU)'
+                }
+
                 print("✅ RunPod AI generation successful!")
-                return jsonify(ai_result)
+                return jsonify(response_data)
             else:
                 print(f"⚠️ RunPod returned status {response.status_code}")
 
