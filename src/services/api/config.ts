@@ -1,5 +1,5 @@
 const API_CONFIG = {
-  BASE_URL: __DEV__ ? 'http://localhost:3000' : 'https://your-api-domain.com',
+  BASE_URL: 'https://fitness-app-ai-7h7d.onrender.com',
   ENDPOINTS: {
     AUTH: {
       LOGIN: '/auth/login',
