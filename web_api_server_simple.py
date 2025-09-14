@@ -29,7 +29,7 @@ CORS(app, supports_credentials=True, origins=[
 ])
 
 # RunPod AI server configuration
-RUNPOD_API_URL = os.getenv('RUNPOD_API_URL', 'http://213.181.111.2:3002')
+RUNPOD_API_URL = os.getenv('RUNPOD_API_URL', 'http://v3lj4jah5lt1vy.runpod.internal:3002')
 
 # Database setup (using SQLite for now)
 DATABASE_PATH = 'fitness_app.db'
