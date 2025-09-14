@@ -22,7 +22,8 @@ app.secret_key = os.getenv('SECRET_KEY', 'your-secret-key-change-in-production')
 CORS(app, supports_credentials=True, origins=[
     'https://*.onrender.com',  # Allow all Render domains
     'https://*.vercel.app',    # Allow all Vercel domains
-    'https://fitness-app-frontend-psi.vercel.app',  # Specific frontend domain
+    'https://fitness-app-frontend-psi.vercel.app',  # Old frontend domain
+    'https://fitness-app-frontend-poqig2wv2-francesco-pio-ramunnos-projects.vercel.app',  # New frontend domain
     'http://localhost:8081',   # For development
     'http://localhost:3000',   # For development
 ])
