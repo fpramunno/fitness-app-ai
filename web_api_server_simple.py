@@ -21,8 +21,10 @@ app.secret_key = os.getenv('SECRET_KEY', 'your-secret-key-change-in-production')
 # CORS configuration
 CORS(app, supports_credentials=True, origins=[
     'https://*.onrender.com',  # Allow all Render domains
-    'http://localhost:8081',  # For development
-    'http://localhost:3000',  # For development
+    'https://*.vercel.app',    # Allow all Vercel domains
+    'https://fitness-app-frontend-psi.vercel.app',  # Specific frontend domain
+    'http://localhost:8081',   # For development
+    'http://localhost:3000',   # For development
 ])
 
 # RunPod AI server configuration
