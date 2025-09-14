@@ -911,7 +911,7 @@
                     <p><strong>Goal:</strong> ${capitalizeFirst(assessment.primary_goal)}</p>
                     <p><strong>Training Days:</strong> ${assessment.training_days_per_week} days per week</p>
                     <p><strong>Mesocycle Week:</strong> ${assessment.mesocycle_week}</p>
-                    <p><strong>Generated:</strong> ${new Date(program.created_at).toLocaleDateString()}</p>
+                    <p><strong>Generated:</strong> ${new Date(program.generated_at || program.created_at).toLocaleDateString()}</p>
                     ${program.generated_with_llm === false ? 
                         '<p style="color: #f59e0b;"><strong>⚠️ Offline Mode:</strong> Using fallback generation. Start Python servers for AI-powered programs.</p>' : 
                         '<p style="color: #059669;"><strong>✅ AI Generated:</strong> Powered by fine-tuned LLM model</p>'
@@ -921,7 +921,7 @@
             
             // Display each day's program
             for (let day = 1; day <= assessment.training_days_per_week; day++) {
-                const session = program.weekly_program[day];
+                const session = program.weekly_program[`Day ${day}`] || program.weekly_program[day];
                 html += `
                     <div class="program-card">
                         <h4 style="color: #2563eb; margin-bottom: 15px;">Day ${day}</h4>
