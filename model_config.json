@@ -1,0 +1,30 @@
+{
+  "base_model": "LGAI-EXAONE/EXAONE-3.5-2.4B-Instruct",
+  "fine_tuned_model_path": null,
+  "use_4bit_quantization": false,
+  "force_gpu": true,
+  "generation_config": {
+    "max_new_tokens": 300,
+    "temperature": 0.6,
+    "do_sample": true,
+    "pad_token_id": 50256
+  },
+  "fallback_to_base": true,
+  "model_options": {
+    "gpt2": {
+      "name": "GPT-2 (Small & Fast)",
+      "max_tokens": 100,
+      "temperature": 0.3
+    },
+    "facebook/MobileLLM-R1-950M": {
+      "name": "MobileLLM-950M (Better Quality)",
+      "max_tokens": 200,
+      "temperature": 0.7
+    },
+    "microsoft/DialoGPT-small": {
+      "name": "DialoGPT (Conversational)",
+      "max_tokens": 150,
+      "temperature": 0.6
+    }
+  }
+}

@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitnessTracker - Program Generator</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .title {
+            color: #2563eb;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 32px;
+            font-weight: bold;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .section-title {
+            color: #1f2937;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            border-left: 4px solid #2563eb;
+            padding-left: 15px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #374151;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        .goal-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .goal-option {
+            padding: 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .goal-option:hover {
+            border-color: #2563eb;
+            background-color: #eff6ff;
+        }
+        .goal-option.selected {
+            border-color: #2563eb;
+            background-color: #dbeafe;
+            font-weight: 600;
+        }
+        .generate-btn {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            padding: 16px 32px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: transform 0.2s;
+        }
+        .generate-btn:hover {
+            transform: translateY(-2px);
+        }
+        .program-display {
+            display: none;
+            margin-top: 30px;
+        }
+        .day-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        .day-title {
+            color: #1e40af;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .exercise-details {
+            color: #374151;
+            font-size: 14px;
+            line-height: 1.5;
+            white-space: pre-line;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">💪 FitnessTracker Program Generator</h1>
+        
+        <form id="assessmentForm">
+            <div class="section">
+                <h2 class="section-title">🏋️ Core Streetlifting Movements</h2>
+                
+                <div class="form-group">
+                    <label for="pullups">Weighted Pull-ups Max (kg)</label>
+                    <input type="number" id="pullups" min="0" placeholder="25" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="dips">Weighted Dips Max (kg)</label>
+                    <input type="number" id="dips" min="0" placeholder="30" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="muscleups">Muscle-ups Max (reps)</label>
+                    <input type="number" id="muscleups" min="0" placeholder="4" required>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">💪 Compound Movements</h2>
+                
+                <div class="form-group">
+                    <label for="rows">Weighted Rows Max (kg)</label>
+                    <input type="number" id="rows" min="0" placeholder="60" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="pushups">Push-ups Max (reps)</label>
+                    <input type="number" id="pushups" min="0" placeholder="35" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="squats">Squats Max (kg)</label>
+                    <input type="number" id="squats" min="0" placeholder="80" required>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">📅 Training Parameters</h2>
+                
+                <div class="form-group">
+                    <label for="trainingDays">Training Days per Week</label>
+                    <select id="trainingDays" required>
+                        <option value="">Select days</option>
+                        <option value="2">2 days</option>
+                        <option value="3" selected>3 days</option>
+                        <option value="4">4 days</option>
+                        <option value="5">5 days</option>
+                        <option value="6">6 days</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="mesoWeek">Current Mesocycle Week</label>
+                    <select id="mesoWeek" required>
+                        <option value="1" selected>Week 1</option>
+                        <option value="2">Week 2</option>
+                        <option value="3">Week 3</option>
+                        <option value="4">Week 4</option>
+                        <option value="5">Week 5</option>
+                        <option value="6">Week 6</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">🎯 Primary Goal</h2>
+                <div class="goal-selector">
+                    <div class="goal-option selected" data-goal="strength">
+                        <strong>Strength Development</strong><br>
+                        <small>Focus on progressive overload</small>
+                    </div>
+                    <div class="goal-option" data-goal="muscle_ups">
+                        <strong>Muscle-up Progression</strong><br>
+                        <small>Master the muscle-up movement</small>
+                    </div>
+                    <div class="goal-option" data-goal="hypertrophy">
+                        <strong>Muscle Building</strong><br>
+                        <small>Increase muscle mass</small>
+                    </div>
+                    <div class="goal-option" data-goal="power">
+                        <strong>Power & Explosiveness</strong><br>
+                        <small>Develop explosive strength</small>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="generate-btn">Generate My Program 🚀</button>
+        </form>
+
+        <div id="programDisplay" class="program-display">
+            <h2 class="section-title">📋 Your Training Program</h2>
+            <div id="programContent"></div>
+        </div>
+    </div>
+
+    <script>
+        let selectedGoal = 'strength';
+
+        // Goal selection
+        document.querySelectorAll('.goal-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.goal-option').forEach(opt => opt.classList.remove('selected'));
+                this.classList.add('selected');
+                selectedGoal = this.dataset.goal;
+            });
+        });
+
+        // Form submission
+        document.getElementById('assessmentForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const assessment = {
+                weighted_pullups_max: parseInt(document.getElementById('pullups').value),
+                weighted_dips_max: parseInt(document.getElementById('dips').value),
+                muscle_ups: parseInt(document.getElementById('muscleups').value),
+                rows_max: parseInt(document.getElementById('rows').value),
+                pushups_max: parseInt(document.getElementById('pushups').value),
+                squats_max: parseInt(document.getElementById('squats').value),
+                training_days_per_week: parseInt(document.getElementById('trainingDays').value),
+                mesocycle_week: parseInt(document.getElementById('mesoWeek').value),
+                primary_goal: selectedGoal
+            };
+
+            document.getElementById('programContent').innerHTML = '<div class="loading">🤖 Generating your personalized program...</div>';
+            document.getElementById('programDisplay').style.display = 'block';
+
+            try {
+                const response = await fetch('http://localhost:3000/api/generate-program', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(assessment)
+                });
+
+                if (response.ok) {
+                    const program = await response.json();
+                    displayProgram(program);
+                } else {
+                    throw new Error('Program generation failed');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('programContent').innerHTML = 
+                    '<div class="loading">❌ Could not connect to backend. Generating mock program...</div>';
+                
+                // Fallback to mock program
+                setTimeout(() => {
+                    displayMockProgram(assessment);
+                }, 1000);
+            }
+        });
+
+        function displayProgram(program) {
+            let html = '<h3>🎯 Goal: ' + program.assessment.primary_goal.toUpperCase() + '</h3>';
+            html += '<p>📅 ' + program.assessment.training_days_per_week + ' days/week • Week ' + program.assessment.mesocycle_week + '</p>';
+            
+            Object.entries(program.weekly_program).forEach(([day, session]) => {
+                html += `
+                    <div class="day-card">
+                        <div class="day-title">💪 Day ${day}</div>
+                        <div class="exercise-details">${session}</div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('programContent').innerHTML = html;
+        }
+
+        function displayMockProgram(assessment) {
+            const program = {
+                assessment: assessment,
+                weekly_program: generateMockProgram(assessment)
+            };
+            displayProgram(program);
+        }
+
+        function generateMockProgram(assessment) {
+            const program = {};
+            const meso = 'MESO' + (Math.floor((assessment.mesocycle_week - 1) / 4) + 1);
+            
+            for (let day = 1; day <= assessment.training_days_per_week; day++) {
+                if (day % 2 === 1) { // Streetlifting days
+                    if (day === 1) {
+                        const weight = Math.max(5, Math.floor(assessment.weighted_pullups_max * 0.8));
+                        program[day] = `${meso} — GIORNO ${day} — Prescription: Trazioni Wide Grip - reset tra le ripetizioni e singole spezzate (Filma solo ultimo set) - ${weight}kg
+Lavoriamo cercando di migliorare oscillazione in partenza (ricerchiamo il pendolo) e scapole attive in partenza | Week data: 5 x 1+1, rest 15"/20" miniset, 1:30 - 2:00 tra i set.
+Filma ultimo set`;
+                    } else {
+                        const weight = Math.max(5, Math.floor(assessment.weighted_dips_max * 0.8));
+                        program[day] = `${meso} — GIORNO ${day} — Prescription: Dips Parallele - controllo fase negativa (Filma ultimo set) - ${weight}kg
+Focus su scapole depresse e addotte durante tutto il movimento e gomiti vicino al corpo, non aperti lateralmente | Week data: 6 x 2, rest 2:00 - 2:30 tra i set.
+Filma ultimo set`;
+                    }
+                } else { // Compound days
+                    if (day === 2) {
+                        const weight = Math.max(20, Math.floor(assessment.rows_max * 0.8));
+                        program[day] = `${meso} — GIORNO ${day} — Prescription: Bent Over Row - focus ipertrofia dorsali (Filma serie centrali) - ${weight}kg
+Lavoriamo su scapole retratte e depresse e squeeze delle scapole in contrazione | Week data: 4 x 6-8, rest 2:00 - 2:30 tra i set.
+Filma serie 2 e 3`;
+                    } else {
+                        const weight = Math.max(40, Math.floor(assessment.squats_max * 0.8));
+                        program[day] = `${meso} — GIORNO ${day} — Prescription: Back Squat - sviluppo forza gambe (Filma ultimo set) - ${weight}kg
+Focus tecnico su discesa controllata sotto il parallelo e core stabile durante tutto il movimento | Week data: 4 x 8-10, rest 2:30 - 3:00 tra i set.
+Filma ultimo set`;
+                    }
+                }
+            }
+            
+            return program;
+        }
+    </script>
+</body>
+</html>
