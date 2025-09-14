@@ -352,11 +352,22 @@ def generate_program_fallback():
         print(f"❌ Error in fallback generation: {e}")
         return jsonify({'error': 'Program generation failed'}), 500
 
+# Auto-initialize database on import (for production)
+try:
+    init_database()
+    print("✅ Database auto-initialized on startup")
+except Exception as e:
+    print(f"⚠️ Database initialization warning: {e}")
+
 if __name__ == '__main__':
     print("🚀 Starting Simple Fitness App API Server...")
 
-    # Initialize database
-    init_database()
+    # Initialize database again to be sure
+    try:
+        init_database()
+        print("✅ Database initialized successfully")
+    except Exception as e:
+        print(f"❌ Database initialization failed: {e}")
 
     port = int(os.getenv('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
