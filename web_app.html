@@ -340,17 +340,21 @@
                         <label for="username">Username</label>
                         <input type="text" id="username" name="username" required>
                     </div>
+                    <div class="form-group" id="emailGroup" style="display: none;">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email">
+                    </div>
                     <div class="form-group" style="margin-bottom: 30px;">
                         <label for="password">Password</label>
                         <input type="password" id="password" name="password" required>
                     </div>
-                    <button type="submit" class="btn btn-primary" style="width: 100%;">
-                        Login / Register
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-bottom: 15px;" id="authButton">
+                        Login
+                    </button>
+                    <button type="button" class="btn btn-secondary" style="width: 100%;" id="toggleAuth">
+                        Need an account? Sign up
                     </button>
                 </form>
-                <p style="text-align: center; margin-top: 20px; color: #6b7280; font-size: 14px;">
-                    Don't have an account? We'll create one for you!
-                </p>
             </div>
         </div>
 
@@ -656,6 +660,7 @@
         let currentUser = null;
         let userPrograms = [];
         let selectedGoal = 'strength';
+        let isSignupMode = false;
 
         // Initialize app
         document.addEventListener('DOMContentLoaded', function() {
@@ -695,42 +700,84 @@
                     showPage(this.dataset.page);
                 });
             });
+
+            // Toggle auth mode
+            const toggleBtn = document.getElementById('toggleAuth');
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function() {
+                    console.log('Toggle button clicked!');
+                    isSignupMode = !isSignupMode;
+                    const emailGroup = document.getElementById('emailGroup');
+                    const authButton = document.getElementById('authButton');
+                    const toggleButton = document.getElementById('toggleAuth');
+
+                    if (isSignupMode) {
+                        emailGroup.style.display = 'block';
+                        emailGroup.querySelector('input').required = true;
+                        authButton.textContent = 'Sign Up';
+                        toggleButton.textContent = 'Have an account? Login';
+                        console.log('Switched to signup mode');
+                    } else {
+                        emailGroup.style.display = 'none';
+                        emailGroup.querySelector('input').required = false;
+                        authButton.textContent = 'Login';
+                        toggleButton.textContent = 'Need an account? Sign up';
+                        console.log('Switched to login mode');
+                    }
+                });
+            } else {
+                console.error('toggleAuth button not found!');
+            }
         }
 
         async function handleAuth(e) {
             e.preventDefault();
-            
+            console.log('Auth form submitted!');
+
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
-            
+            const email = document.getElementById('email').value;
+
+            console.log('Form data:', { username, isSignupMode });
+
             try {
-                // Authenticate with the API server
-                const response = await fetch('http://localhost:3000/api/auth/login', {
+                let endpoint = isSignupMode ? '/api/auth/signup' : '/api/auth/login';
+                let requestBody = isSignupMode
+                    ? { username, password, email }
+                    : { username, password };
+
+                const response = await fetch(`https://fitness-app-ai-7h7d.onrender.com${endpoint}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    credentials: 'include', // Important for session cookies
-                    body: JSON.stringify({ username, password })
+                    credentials: 'include',
+                    body: JSON.stringify(requestBody)
                 });
-                
+
                 if (response.ok) {
                     const data = await response.json();
-                    currentUser = data.user;
-                    
-                    // Also save to localStorage for offline fallback
-                    localStorage.setItem('fitnessAppUser', JSON.stringify(currentUser));
-                    localStorage.setItem(`user_${username}`, JSON.stringify(currentUser));
-                    
-                    loadUserData();
-                    showApp();
+
+                    if (isSignupMode) {
+                        alert('Account created successfully! You can now login.');
+                        // Switch to login mode
+                        document.getElementById('toggleAuth').click();
+                        document.getElementById('authForm').reset();
+                    } else {
+                        currentUser = data.user;
+                        localStorage.setItem('fitnessAppUser', JSON.stringify(currentUser));
+                        localStorage.setItem(`user_${username}`, JSON.stringify(currentUser));
+                        loadUserData();
+                        showApp();
+                    }
                 } else {
                     const error = await response.json();
-                    alert('Login failed: ' + (error.error || 'Unknown error'));
+                    const action = isSignupMode ? 'Signup' : 'Login';
+                    alert(`${action} failed: ${error.error || 'Unknown error'}`);
                 }
             } catch (error) {
                 console.error('Auth error:', error);
-                alert('Could not connect to server. Please make sure the API server is running on port 3000.');
+                alert('Could not connect to server. Backend may be starting up, please wait a moment and try again.');
             }
         }
 
@@ -791,7 +838,7 @@
             
             try {
                 // Try to call the real API
-                const response = await fetch('http://localhost:3000/api/generate-program', {
+                const response = await fetch('https://fitness-app-ai-7h7d.onrender.com/api/generate-program', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
