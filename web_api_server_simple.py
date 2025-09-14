@@ -30,7 +30,7 @@ CORS(app, supports_credentials=True, origins=[
 ])
 
 # RunPod AI server configuration
-RUNPOD_API_URL = os.getenv('RUNPOD_API_URL', 'http://213.181.111.2:3002')
+RUNPOD_API_URL = os.getenv('RUNPOD_API_URL', 'https://v3lj4jah5lt1vy-8888.proxy.runpod.net')
 
 # Database setup (using SQLite for now)
 DATABASE_PATH = 'fitness_app.db'
@@ -344,7 +344,7 @@ def generate_program():
         try:
             print(f"🔗 Calling RunPod AI at {RUNPOD_API_URL}")
             response = requests.post(
-                f"{RUNPOD_API_URL}/generate-program",
+                f"{RUNPOD_API_URL}/generate",
                 json=data,
                 timeout=30
             )
