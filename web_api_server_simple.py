@@ -237,12 +237,43 @@ def login():
                 session['user_id'] = user['id']
                 session['username'] = user['username']
 
+                # Get user stats
+                cursor.execute('SELECT * FROM user_stats WHERE user_id = ?', (user['id'],))
+                stats = cursor.fetchone()
+
+                if not stats:
+                    # Create default stats if they don't exist
+                    cursor.execute('''
+                        INSERT INTO user_stats (user_id, total_programs, current_streak, favorite_goal, avg_days_per_week)
+                        VALUES (?, 0, 0, 'strength', 3.0)
+                    ''', (user['id'],))
+                    conn.commit()
+                    stats = {
+                        'total_programs': 0,
+                        'current_streak': 0,
+                        'favorite_goal': 'strength',
+                        'avg_days_per_week': 3.0
+                    }
+                else:
+                    stats = {
+                        'total_programs': stats['total_programs'],
+                        'current_streak': stats['current_streak'],
+                        'favorite_goal': stats['favorite_goal'],
+                        'avg_days_per_week': stats['avg_days_per_week']
+                    }
+
                 return jsonify({
                     'success': True,
                     'user': {
                         'id': user['id'],
                         'username': user['username'],
-                        'email': user['email']
+                        'email': user['email'],
+                        'stats': {
+                            'totalPrograms': stats['total_programs'],
+                            'currentStreak': stats['current_streak'],
+                            'favoriteGoal': stats['favorite_goal'],
+                            'avgDaysPerWeek': stats['avg_days_per_week']
+                        }
                     }
                 })
             else:
