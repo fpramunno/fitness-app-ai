@@ -30,7 +30,7 @@ CORS(app, supports_credentials=True, origins=[
 ])
 
 # RunPod AI server configuration
-RUNPOD_API_URL = os.getenv('RUNPOD_API_URL', 'https://v3lj4jah5lt1vy-8888.proxy.runpod.net')
+RUNPOD_API_URL = os.getenv('RUNPOD_API_URL', 'https://1da8b62ebe5f.ngrok-free.app')
 
 # Database setup (using SQLite for now)
 DATABASE_PATH = 'fitness_app.db'
